@@ -1,0 +1,497 @@
+{
+  "generated_at": "2026-11-04T02:35:53",
+  "hero_elf": "TPL_ARM_Elf23_Birokrat",
+  "resolution": 256,
+  "loop_frames_per_anim": 8,
+  "elves": [
+    "ELF06",
+    "ELF10",
+    "ELF14",
+    "ELF16",
+    "ELF21",
+    "ELF23",
+    "ELF28"
+  ],
+  "animations": [
+    {
+      "index": 1,
+      "name": "AF_01_Walk_Steady",
+      "short_name": "01_Walk_Steady",
+      "category": "LOCOMOTION",
+      "frames": 94,
+      "speed_mps": 1.43,
+      "peak_loop_idx": 6,
+      "sample_frames": [
+        1,
+        13,
+        25,
+        36,
+        48,
+        60,
+        71,
+        83
+      ],
+      "max_motion_m": 1.4573
+    },
+    {
+      "index": 2,
+      "name": "AF_02_Walk_Brisk",
+      "short_name": "02_Walk_Brisk",
+      "category": "LOCOMOTION",
+      "frames": 88,
+      "speed_mps": 1.92,
+      "peak_loop_idx": 6,
+      "sample_frames": [
+        1,
+        12,
+        23,
+        34,
+        45,
+        56,
+        67,
+        78
+      ],
+      "max_motion_m": 1.7075
+    },
+    {
+      "index": 3,
+      "name": "AF_03_Jog_Cycle",
+      "short_name": "03_Jog_Cycle",
+      "category": "LOCOMOTION",
+      "frames": 21,
+      "speed_mps": 3.79,
+      "peak_loop_idx": 2,
+      "sample_frames": [
+        1,
+        4,
+        6,
+        9,
+        11,
+        14,
+        17,
+        19
+      ],
+      "max_motion_m": 2.0426
+    },
+    {
+      "index": 4,
+      "name": "AF_04_Run_Sprint",
+      "short_name": "04_Run_Sprint",
+      "category": "LOCOMOTION",
+      "frames": 18,
+      "speed_mps": 5.88,
+      "peak_loop_idx": 6,
+      "sample_frames": [
+        1,
+        3,
+        5,
+        8,
+        10,
+        12,
+        15,
+        17
+      ],
+      "max_motion_m": 2.7181
+    },
+    {
+      "index": 5,
+      "name": "AF_05_Walk_Backwards",
+      "short_name": "05_Walk_Backwards",
+      "category": "LOCOMOTION",
+      "frames": 82,
+      "speed_mps": 1.6,
+      "peak_loop_idx": 6,
+      "sample_frames": [
+        1,
+        11,
+        21,
+        32,
+        42,
+        52,
+        63,
+        73
+      ],
+      "max_motion_m": 1.6671
+    },
+    {
+      "index": 6,
+      "name": "AF_06_Idle_Breathing",
+      "short_name": "06_Idle_Breathing",
+      "category": "STATIONARY",
+      "frames": 487,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 4,
+      "sample_frames": [
+        74,
+        86,
+        98,
+        110,
+        122,
+        134,
+        146,
+        158
+      ],
+      "max_motion_m": 0.1623
+    },
+    {
+      "index": 7,
+      "name": "AF_07_Idle_LookAround",
+      "short_name": "07_Idle_LookAround",
+      "category": "STATIONARY",
+      "frames": 107,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 5,
+      "sample_frames": [
+        1,
+        14,
+        28,
+        41,
+        55,
+        68,
+        81,
+        95
+      ],
+      "max_motion_m": 0.1372
+    },
+    {
+      "index": 8,
+      "name": "AF_08_Talking_Gestures",
+      "short_name": "08_Talking_Gestures",
+      "category": "STATIONARY",
+      "frames": 293,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 5,
+      "sample_frames": [
+        44,
+        56,
+        68,
+        80,
+        92,
+        104,
+        116,
+        128
+      ],
+      "max_motion_m": 0.8268
+    },
+    {
+      "index": 9,
+      "name": "AF_09_Victory_Dance",
+      "short_name": "09_Victory_Dance",
+      "category": "STATIONARY",
+      "frames": 129,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 2,
+      "sample_frames": [
+        20,
+        32,
+        44,
+        56,
+        68,
+        80,
+        92,
+        104
+      ],
+      "max_motion_m": 3.2664
+    },
+    {
+      "index": 10,
+      "name": "AF_10_ActionForge_NinjaJump",
+      "short_name": "10_ActionForge_NinjaJump",
+      "category": "ACTIONFORGE",
+      "frames": 68,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 2,
+      "sample_frames": [
+        1,
+        9,
+        18,
+        27,
+        35,
+        43,
+        52,
+        61
+      ],
+      "max_motion_m": 3.9539
+    },
+    {
+      "index": 11,
+      "name": "AF_11_Walk_Masculine",
+      "short_name": "11_Walk_Masculine",
+      "category": "LOCOMOTION",
+      "frames": 58,
+      "speed_mps": 1.66,
+      "peak_loop_idx": 1,
+      "sample_frames": [
+        1,
+        8,
+        15,
+        23,
+        30,
+        37,
+        45,
+        52
+      ],
+      "max_motion_m": 1.8017
+    },
+    {
+      "index": 12,
+      "name": "AF_12_Walk_Strafe_Left",
+      "short_name": "12_Walk_Strafe_Left",
+      "category": "LOCOMOTION",
+      "frames": 31,
+      "speed_mps": 1.5,
+      "peak_loop_idx": 2,
+      "sample_frames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        20,
+        24,
+        28
+      ],
+      "max_motion_m": 1.3471
+    },
+    {
+      "index": 13,
+      "name": "AF_13_Walk_Strafe_Right",
+      "short_name": "13_Walk_Strafe_Right",
+      "category": "LOCOMOTION",
+      "frames": 32,
+      "speed_mps": 1.49,
+      "peak_loop_idx": 2,
+      "sample_frames": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        21,
+        25,
+        29
+      ],
+      "max_motion_m": 1.332
+    },
+    {
+      "index": 14,
+      "name": "AF_14_Walk_Jump",
+      "short_name": "14_Walk_Jump",
+      "category": "LOCOMOTION",
+      "frames": 54,
+      "speed_mps": 2.22,
+      "peak_loop_idx": 5,
+      "sample_frames": [
+        1,
+        8,
+        15,
+        21,
+        28,
+        35,
+        41,
+        48
+      ],
+      "max_motion_m": 2.3874
+    },
+    {
+      "index": 15,
+      "name": "AF_15_Idle_LookAround_02",
+      "short_name": "15_Idle_LookAround_02",
+      "category": "STATIONARY",
+      "frames": 172,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 4,
+      "sample_frames": [
+        26,
+        38,
+        50,
+        62,
+        74,
+        86,
+        98,
+        110
+      ],
+      "max_motion_m": 0.8007
+    },
+    {
+      "index": 16,
+      "name": "AF_16_Idle_ShiftWeight_03",
+      "short_name": "16_Idle_ShiftWeight_03",
+      "category": "STATIONARY",
+      "frames": 311,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 5,
+      "sample_frames": [
+        47,
+        59,
+        71,
+        83,
+        95,
+        107,
+        119,
+        131
+      ],
+      "max_motion_m": 0.7758
+    },
+    {
+      "index": 17,
+      "name": "AF_17_Standing_Expressions_01",
+      "short_name": "17_Standing_Expressions_01",
+      "category": "STATIONARY",
+      "frames": 183,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 6,
+      "sample_frames": [
+        28,
+        40,
+        52,
+        64,
+        76,
+        88,
+        100,
+        112
+      ],
+      "max_motion_m": 1.8841
+    },
+    {
+      "index": 18,
+      "name": "AF_18_Standing_Expressions_02",
+      "short_name": "18_Standing_Expressions_02",
+      "category": "STATIONARY",
+      "frames": 121,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 3,
+      "sample_frames": [
+        19,
+        31,
+        43,
+        55,
+        67,
+        79,
+        91,
+        103
+      ],
+      "max_motion_m": 1.8521
+    },
+    {
+      "index": 19,
+      "name": "AF_19_Talking_Gestures_02",
+      "short_name": "19_Talking_Gestures_02",
+      "category": "STATIONARY",
+      "frames": 248,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 7,
+      "sample_frames": [
+        38,
+        50,
+        62,
+        74,
+        86,
+        98,
+        110,
+        122
+      ],
+      "max_motion_m": 0.1809
+    },
+    {
+      "index": 20,
+      "name": "AF_20_Dance_Groove_04",
+      "short_name": "20_Dance_Groove_04",
+      "category": "STATIONARY",
+      "frames": 136,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 4,
+      "sample_frames": [
+        21,
+        33,
+        45,
+        57,
+        69,
+        81,
+        93,
+        105
+      ],
+      "max_motion_m": 6.1882
+    },
+    {
+      "index": 21,
+      "name": "AF_21_Dance_Upbeat_05",
+      "short_name": "21_Dance_Upbeat_05",
+      "category": "STATIONARY",
+      "frames": 164,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 3,
+      "sample_frames": [
+        25,
+        37,
+        49,
+        61,
+        73,
+        85,
+        97,
+        109
+      ],
+      "max_motion_m": 4.7589
+    },
+    {
+      "index": 22,
+      "name": "AF_22_Work_Crafting_Table",
+      "short_name": "22_Work_Crafting_Table",
+      "category": "WORK",
+      "frames": 407,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 6,
+      "sample_frames": [
+        62,
+        74,
+        86,
+        98,
+        110,
+        122,
+        134,
+        146
+      ],
+      "max_motion_m": 2.4022
+    },
+    {
+      "index": 23,
+      "name": "AF_23_ActionForge_Idle_Loop",
+      "short_name": "23_ActionForge_Idle_Loop",
+      "category": "ACTIONFORGE",
+      "frames": 75,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 2,
+      "sample_frames": [
+        1,
+        10,
+        20,
+        29,
+        39,
+        48,
+        57,
+        67
+      ],
+      "max_motion_m": 0.1456
+    },
+    {
+      "index": 24,
+      "name": "AF_24_ActionForge_Dance_Loop",
+      "short_name": "24_ActionForge_Dance_Loop",
+      "category": "ACTIONFORGE",
+      "frames": 30,
+      "speed_mps": 0.0,
+      "peak_loop_idx": 4,
+      "sample_frames": [
+        1,
+        5,
+        9,
+        12,
+        16,
+        20,
+        23,
+        27
+      ],
+      "max_motion_m": 0.9485
+    }
+  ]
+}

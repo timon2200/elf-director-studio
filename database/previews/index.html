@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<title>ActionForge Elf Director v3.0 — 24 Loop Animacije (Low-FPS Preview)</title>
+<style>
+  :root {
+    --bg: #0b0f17;
+    --card: #151c28;
+    --border: #263248;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 24px 32px;
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { font-size: 22px; font-weight: 700; }
+  .sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn.active, .btn:hover { background: #2563eb; border-color: #3b82f6; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: #60a5fa; }
+  .video-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #080b11;
+  }
+  video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .badge-idx {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(15, 23, 42, 0.88);
+    color: #fff; font-weight: 700; font-size: 12px;
+    padding: 3px 7px; border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .badge-cat {
+    position: absolute; top: 8px; right: 8px;
+    font-weight: 700; font-size: 10px;
+    padding: 3px 7px; border-radius: 6px;
+    color: #090d14;
+  }
+  .cat-LOCOMOTION { background: #22c55e; }
+  .cat-STATIONARY { background: #f59e0b; }
+  .cat-ACTIONFORGE { background: #a855f7; color: #fff; }
+  .cat-WORK { background: #06b6d4; }
+  .info { padding: 11px 12px; }
+  .title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+  .code { font-size: 11px; color: var(--muted); font-family: monospace; margin-bottom: 8px; }
+  .meta { display: flex; justify-content: space-between; font-size: 11px; color: #cbd5e1; }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>ActionForge Elf Director v3.0 — Katalog 24 Animacije</h1>
+      <div class="sub">8-FPS kompresirani loop preview na modelu #23 Stari Birokrat (Pošta) · Spremno za Blender N-Panel</div>
+    </div>
+    <div class="filters">
+      <button class="btn active" onclick="filterCat('ALL', this)">Sve (24)</button>
+      <button class="btn" onclick="filterCat('LOCOMOTION', this)">Locomotion (9)</button>
+      <button class="btn" onclick="filterCat('STATIONARY', this)">Stationary (11)</button>
+      <button class="btn" onclick="filterCat('ACTIONFORGE', this)">ActionForge (3)</button>
+      <button class="btn" onclick="filterCat('WORK', this)">Work (1)</button>
+    </div>
+  </header>
+  <div class="grid" id="grid">
+    
+        <div class="card" data-cat="LOCOMOTION" data-name="af_01_walk_steady">
+          <div class="video-wrap">
+            <video src="videos/AF_01_Walk_Steady.mp4" poster="thumbs/AF_01_Walk_Steady.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#01</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Steady</div>
+            <div class="code">AF_01_Walk_Steady</div>
+            <div class="meta"><span>94 frames</span><span>1.43 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_02_walk_brisk">
+          <div class="video-wrap">
+            <video src="videos/AF_02_Walk_Brisk.mp4" poster="thumbs/AF_02_Walk_Brisk.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#02</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Brisk</div>
+            <div class="code">AF_02_Walk_Brisk</div>
+            <div class="meta"><span>88 frames</span><span>1.92 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_03_jog_cycle">
+          <div class="video-wrap">
+            <video src="videos/AF_03_Jog_Cycle.mp4" poster="thumbs/AF_03_Jog_Cycle.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#03</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Jog Cycle</div>
+            <div class="code">AF_03_Jog_Cycle</div>
+            <div class="meta"><span>21 frames</span><span>3.79 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_04_run_sprint">
+          <div class="video-wrap">
+            <video src="videos/AF_04_Run_Sprint.mp4" poster="thumbs/AF_04_Run_Sprint.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#04</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Run Sprint</div>
+            <div class="code">AF_04_Run_Sprint</div>
+            <div class="meta"><span>18 frames</span><span>5.88 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_05_walk_backwards">
+          <div class="video-wrap">
+            <video src="videos/AF_05_Walk_Backwards.mp4" poster="thumbs/AF_05_Walk_Backwards.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#05</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Backwards</div>
+            <div class="code">AF_05_Walk_Backwards</div>
+            <div class="meta"><span>82 frames</span><span>1.60 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_06_idle_breathing">
+          <div class="video-wrap">
+            <video src="videos/AF_06_Idle_Breathing.mp4" poster="thumbs/AF_06_Idle_Breathing.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#06</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Idle Breathing</div>
+            <div class="code">AF_06_Idle_Breathing</div>
+            <div class="meta"><span>487 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_07_idle_lookaround">
+          <div class="video-wrap">
+            <video src="videos/AF_07_Idle_LookAround.mp4" poster="thumbs/AF_07_Idle_LookAround.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#07</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Idle LookAround</div>
+            <div class="code">AF_07_Idle_LookAround</div>
+            <div class="meta"><span>107 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_08_talking_gestures">
+          <div class="video-wrap">
+            <video src="videos/AF_08_Talking_Gestures.mp4" poster="thumbs/AF_08_Talking_Gestures.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#08</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Talking Gestures</div>
+            <div class="code">AF_08_Talking_Gestures</div>
+            <div class="meta"><span>293 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_09_victory_dance">
+          <div class="video-wrap">
+            <video src="videos/AF_09_Victory_Dance.mp4" poster="thumbs/AF_09_Victory_Dance.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#09</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Victory Dance</div>
+            <div class="code">AF_09_Victory_Dance</div>
+            <div class="meta"><span>129 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="ACTIONFORGE" data-name="af_10_actionforge_ninjajump">
+          <div class="video-wrap">
+            <video src="videos/AF_10_ActionForge_NinjaJump.mp4" poster="thumbs/AF_10_ActionForge_NinjaJump.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#10</span>
+            <span class="badge-cat cat-ACTIONFORGE">ACTIONFORGE</span>
+          </div>
+          <div class="info">
+            <div class="title">AF NinjaJump</div>
+            <div class="code">AF_10_ActionForge_NinjaJump</div>
+            <div class="meta"><span>68 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_11_walk_masculine">
+          <div class="video-wrap">
+            <video src="videos/AF_11_Walk_Masculine.mp4" poster="thumbs/AF_11_Walk_Masculine.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#11</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Masculine</div>
+            <div class="code">AF_11_Walk_Masculine</div>
+            <div class="meta"><span>58 frames</span><span>1.66 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_12_walk_strafe_left">
+          <div class="video-wrap">
+            <video src="videos/AF_12_Walk_Strafe_Left.mp4" poster="thumbs/AF_12_Walk_Strafe_Left.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#12</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Strafe Left</div>
+            <div class="code">AF_12_Walk_Strafe_Left</div>
+            <div class="meta"><span>31 frames</span><span>1.50 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_13_walk_strafe_right">
+          <div class="video-wrap">
+            <video src="videos/AF_13_Walk_Strafe_Right.mp4" poster="thumbs/AF_13_Walk_Strafe_Right.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#13</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Strafe Right</div>
+            <div class="code">AF_13_Walk_Strafe_Right</div>
+            <div class="meta"><span>32 frames</span><span>1.49 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="LOCOMOTION" data-name="af_14_walk_jump">
+          <div class="video-wrap">
+            <video src="videos/AF_14_Walk_Jump.mp4" poster="thumbs/AF_14_Walk_Jump.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#14</span>
+            <span class="badge-cat cat-LOCOMOTION">LOCOMOTION</span>
+          </div>
+          <div class="info">
+            <div class="title">Walk Jump</div>
+            <div class="code">AF_14_Walk_Jump</div>
+            <div class="meta"><span>54 frames</span><span>2.22 m/s</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_15_idle_lookaround_02">
+          <div class="video-wrap">
+            <video src="videos/AF_15_Idle_LookAround_02.mp4" poster="thumbs/AF_15_Idle_LookAround_02.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#15</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Idle LookAround 02</div>
+            <div class="code">AF_15_Idle_LookAround_02</div>
+            <div class="meta"><span>172 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_16_idle_shiftweight_03">
+          <div class="video-wrap">
+            <video src="videos/AF_16_Idle_ShiftWeight_03.mp4" poster="thumbs/AF_16_Idle_ShiftWeight_03.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#16</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Idle ShiftWeight 03</div>
+            <div class="code">AF_16_Idle_ShiftWeight_03</div>
+            <div class="meta"><span>311 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_17_standing_expressions_01">
+          <div class="video-wrap">
+            <video src="videos/AF_17_Standing_Expressions_01.mp4" poster="thumbs/AF_17_Standing_Expressions_01.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#17</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Standing Expr 01</div>
+            <div class="code">AF_17_Standing_Expressions_01</div>
+            <div class="meta"><span>183 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_18_standing_expressions_02">
+          <div class="video-wrap">
+            <video src="videos/AF_18_Standing_Expressions_02.mp4" poster="thumbs/AF_18_Standing_Expressions_02.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#18</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Standing Expr 02</div>
+            <div class="code">AF_18_Standing_Expressions_02</div>
+            <div class="meta"><span>121 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_19_talking_gestures_02">
+          <div class="video-wrap">
+            <video src="videos/AF_19_Talking_Gestures_02.mp4" poster="thumbs/AF_19_Talking_Gestures_02.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#19</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Talking Gestures 02</div>
+            <div class="code">AF_19_Talking_Gestures_02</div>
+            <div class="meta"><span>248 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_20_dance_groove_04">
+          <div class="video-wrap">
+            <video src="videos/AF_20_Dance_Groove_04.mp4" poster="thumbs/AF_20_Dance_Groove_04.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#20</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Dance Groove 04</div>
+            <div class="code">AF_20_Dance_Groove_04</div>
+            <div class="meta"><span>136 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="STATIONARY" data-name="af_21_dance_upbeat_05">
+          <div class="video-wrap">
+            <video src="videos/AF_21_Dance_Upbeat_05.mp4" poster="thumbs/AF_21_Dance_Upbeat_05.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#21</span>
+            <span class="badge-cat cat-STATIONARY">STATIONARY</span>
+          </div>
+          <div class="info">
+            <div class="title">Dance Upbeat 05</div>
+            <div class="code">AF_21_Dance_Upbeat_05</div>
+            <div class="meta"><span>164 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="WORK" data-name="af_22_work_crafting_table">
+          <div class="video-wrap">
+            <video src="videos/AF_22_Work_Crafting_Table.mp4" poster="thumbs/AF_22_Work_Crafting_Table.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#22</span>
+            <span class="badge-cat cat-WORK">WORK</span>
+          </div>
+          <div class="info">
+            <div class="title">Work Crafting Table</div>
+            <div class="code">AF_22_Work_Crafting_Table</div>
+            <div class="meta"><span>407 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="ACTIONFORGE" data-name="af_23_actionforge_idle_loop">
+          <div class="video-wrap">
+            <video src="videos/AF_23_ActionForge_Idle_Loop.mp4" poster="thumbs/AF_23_ActionForge_Idle_Loop.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#23</span>
+            <span class="badge-cat cat-ACTIONFORGE">ACTIONFORGE</span>
+          </div>
+          <div class="info">
+            <div class="title">AF Idle Loop</div>
+            <div class="code">AF_23_ActionForge_Idle_Loop</div>
+            <div class="meta"><span>75 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+        <div class="card" data-cat="ACTIONFORGE" data-name="af_24_actionforge_dance_loop">
+          <div class="video-wrap">
+            <video src="videos/AF_24_ActionForge_Dance_Loop.mp4" poster="thumbs/AF_24_ActionForge_Dance_Loop.png" autoplay loop muted playsinline></video>
+            <span class="badge-idx">#24</span>
+            <span class="badge-cat cat-ACTIONFORGE">ACTIONFORGE</span>
+          </div>
+          <div class="info">
+            <div class="title">AF Dance Loop</div>
+            <div class="code">AF_24_ActionForge_Dance_Loop</div>
+            <div class="meta"><span>30 frames</span><span>In-Place</span></div>
+          </div>
+        </div>
+        
+  </div>
+  <script>
+    function filterCat(cat, btn) {
+      document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.card').forEach(c => {
+        c.style.display = (cat === 'ALL' || c.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

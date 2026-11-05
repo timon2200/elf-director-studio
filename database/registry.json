@@ -1,0 +1,444 @@
+{
+  "package": "ActionForge Elf Animation Director Studio",
+  "version": "3.0.0",
+  "schema_version": 3,
+  "library_blend": "database/elf_assets_library.blend",
+  "template_collection": "00_RIGGED_ELF_TEMPLATES",
+  "actors_collection": "01_SCENE_ELF_ACTORS",
+  "paths_collection": "02_LOCOMOTION_CURVES",
+  "elves_count": 7,
+  "animations_count": 34,
+  "elves": [
+    {
+      "id": "ELF06",
+      "title": "#06 Strojovođa (Lokomotiva)",
+      "template_armature": "TPL_ARM_Elf06_Strojovodja",
+      "collection": "TPL_Elf06_Strojovodja",
+      "parts": [
+        "BODY",
+        "GLASSES",
+        "HEAD"
+      ],
+      "has_hat": false,
+      "has_glasses": true
+    },
+    {
+      "id": "ELF10",
+      "title": "#10 Stari Urar (Horologist)",
+      "template_armature": "TPL_ARM_Elf10_Urar",
+      "collection": "TPL_Elf10_Urar",
+      "parts": [
+        "BODY",
+        "GLASSES",
+        "HAT",
+        "HEAD"
+      ],
+      "has_hat": true,
+      "has_glasses": true
+    },
+    {
+      "id": "ELF14",
+      "title": "#14 Majstor Stolar (Woodworker)",
+      "template_armature": "TPL_ARM_Elf14_Stolar",
+      "collection": "TPL_Elf14_Stolar",
+      "parts": [
+        "BODY",
+        "HEAD"
+      ],
+      "has_hat": false,
+      "has_glasses": false
+    },
+    {
+      "id": "ELF16",
+      "title": "#16 Bojadišarica (Toy Painter)",
+      "template_armature": "TPL_ARM_Elf16_Bojadisarica",
+      "collection": "TPL_Elf16_Bojadisarica",
+      "parts": [
+        "BODY",
+        "HEAD"
+      ],
+      "has_hat": false,
+      "has_glasses": false
+    },
+    {
+      "id": "ELF21",
+      "title": "#21 Pekar Medenjaka (Baker)",
+      "template_armature": "TPL_ARM_Elf21_Pekar",
+      "collection": "TPL_Elf21_Pekar",
+      "parts": [
+        "BODY",
+        "HEAD"
+      ],
+      "has_hat": false,
+      "has_glasses": false
+    },
+    {
+      "id": "ELF23",
+      "title": "#23 Stari Birokrat (Pošta)",
+      "template_armature": "TPL_ARM_Elf23_Birokrat",
+      "collection": "TPL_Elf23_Birokrat",
+      "parts": [
+        "BODY",
+        "GLASSES",
+        "HAT",
+        "HEAD"
+      ],
+      "has_hat": true,
+      "has_glasses": true
+    },
+    {
+      "id": "ELF28",
+      "title": "#28 Osobni Pomoćnik Djeda",
+      "template_armature": "TPL_ARM_Elf28_Pomocnik",
+      "collection": "TPL_Elf28_Pomocnik",
+      "parts": [
+        "BODY",
+        "HEAD"
+      ],
+      "has_hat": false,
+      "has_glasses": false
+    }
+  ],
+  "animations": [
+    {
+      "name": "AF_01_Walk_Steady",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.4322,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 95,
+      "duration_sec": 3.13
+    },
+    {
+      "name": "AF_02_Walk_Brisk",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.9235,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 89,
+      "duration_sec": 2.93
+    },
+    {
+      "name": "AF_03_Jog_Cycle",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 3.7948,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 22,
+      "duration_sec": 0.7
+    },
+    {
+      "name": "AF_04_Run_Sprint",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 5.8796,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 19,
+      "duration_sec": 0.6
+    },
+    {
+      "name": "AF_05_Walk_Backwards",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.5983,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": true,
+      "frames": 83,
+      "duration_sec": 2.73
+    },
+    {
+      "name": "AF_06_Idle_Breathing",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9035,
+      "is_backwards": false,
+      "frames": 488,
+      "duration_sec": 16.23
+    },
+    {
+      "name": "AF_07_Idle_LookAround",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9035,
+      "is_backwards": false,
+      "frames": 108,
+      "duration_sec": 3.57
+    },
+    {
+      "name": "AF_08_Talking_Gestures",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9035,
+      "is_backwards": false,
+      "frames": 294,
+      "duration_sec": 9.77
+    },
+    {
+      "name": "AF_09_Victory_Dance",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9035,
+      "is_backwards": false,
+      "frames": 130,
+      "duration_sec": 4.3
+    },
+    {
+      "name": "AF_10_ActionForge_NinjaJump",
+      "category": "ACTIONFORGE",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9035,
+      "is_backwards": false,
+      "frames": 69,
+      "duration_sec": 2.27
+    },
+    {
+      "name": "AF_11_Walk_Masculine",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.6585,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 59,
+      "duration_sec": 1.93
+    },
+    {
+      "name": "AF_12_Walk_Strafe_Left",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.502,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 32,
+      "duration_sec": 1.03
+    },
+    {
+      "name": "AF_13_Walk_Strafe_Right",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.4914,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 33,
+      "duration_sec": 1.07
+    },
+    {
+      "name": "AF_14_Walk_Jump",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 2.2235,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 55,
+      "duration_sec": 1.8
+    },
+    {
+      "name": "AF_15_Idle_LookAround_02",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 173,
+      "duration_sec": 5.73
+    },
+    {
+      "name": "AF_16_Idle_ShiftWeight_03",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 312,
+      "duration_sec": 10.37
+    },
+    {
+      "name": "AF_17_Standing_Expressions_01",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 184,
+      "duration_sec": 6.1
+    },
+    {
+      "name": "AF_18_Standing_Expressions_02",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 122,
+      "duration_sec": 4.03
+    },
+    {
+      "name": "AF_19_Talking_Gestures_02",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 249,
+      "duration_sec": 8.27
+    },
+    {
+      "name": "AF_20_Dance_Groove_04",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 137,
+      "duration_sec": 4.53
+    },
+    {
+      "name": "AF_21_Dance_Upbeat_05",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 165,
+      "duration_sec": 5.47
+    },
+    {
+      "name": "AF_22_Work_Crafting_Table",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 408,
+      "duration_sec": 13.57
+    },
+    {
+      "name": "AF_23_ActionForge_Idle_Loop",
+      "category": "ACTIONFORGE",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 76,
+      "duration_sec": 2.5
+    },
+    {
+      "name": "AF_24_ActionForge_Dance_Loop",
+      "category": "ACTIONFORGE",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 31,
+      "duration_sec": 1.0
+    },
+    {
+      "name": "AF_25_Climb_Ladder",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 121,
+      "duration_sec": 4.0
+    },
+    {
+      "name": "AF_26_Seated_Stamp_Mail",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 135,
+      "duration_sec": 4.47
+    },
+    {
+      "name": "AF_27_Mine_Pickaxe",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 121,
+      "duration_sec": 4.0
+    },
+    {
+      "name": "AF_28_Wave_Hello",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 130,
+      "duration_sec": 4.3
+    },
+    {
+      "name": "AF_29_Thank_You_Bow",
+      "category": "STATIONARY",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 138,
+      "duration_sec": 4.57
+    },
+    {
+      "name": "AF_30_Shovel_Pitchfork",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 181,
+      "duration_sec": 6.0
+    },
+    {
+      "name": "AF_31_Sweep_Broom",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 146,
+      "duration_sec": 4.83
+    },
+    {
+      "name": "AF_32_Seated_Write_Desk",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 135,
+      "duration_sec": 4.47
+    },
+    {
+      "name": "AF_33_Climb_Stairs",
+      "category": "WORK",
+      "is_locomotion": false,
+      "speed_mps": 0.0,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 85,
+      "duration_sec": 2.8
+    },
+    {
+      "name": "AF_34_Walk_Push_Minecart",
+      "category": "LOCOMOTION",
+      "is_locomotion": true,
+      "speed_mps": 1.4322,
+      "ref_leg_len_m": 0.9961,
+      "is_backwards": false,
+      "frames": 95,
+      "duration_sec": 3.13
+    }
+  ]
+}
