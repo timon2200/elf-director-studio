@@ -1458,8 +1458,11 @@ def apply_ropeway_evaluation_to_system(sys_root: bpy.types.Object, frame: float 
         bull_obj = bpy.data.objects.get(n_obj.get("af_rw_bullwheel_obj", ""))
         if bull_obj:
             is_terminal = (pf["index"] == 0 or pf["index"] == n_pylons - 1)
-            bull_obj.hide_viewport = not (show_bull and is_terminal)
-            bull_obj.hide_render = not (show_bull and is_terminal)
+            hide_bull = not (show_bull and is_terminal)
+            if bull_obj.hide_viewport != hide_bull:
+                bull_obj.hide_viewport = hide_bull
+            if bull_obj.hide_render != hide_bull:
+                bull_obj.hide_render = hide_bull
             if show_bull and is_terminal:
                 bull_angle = travel_dist / max(0.3, pf["half_gauge"])
                 bull_obj.location = (0.0, 0.0, -0.04)
@@ -2382,6 +2385,9 @@ def af_ropeway_depsgraph_update_handler(scene, depsgraph=None):
     """
     global _RW_EVAL_GUARD, _NULL_POS_CACHE
     if _RW_EVAL_GUARD:
+        return
+    scr = getattr(bpy.context, "screen", None)
+    if scr and getattr(scr, "is_animation_playing", False):
         return
 
     dirty_systems = set()

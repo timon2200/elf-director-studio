@@ -803,3 +803,178 @@ def delete_elf_actor(context, ctrl_obj) -> bool:
         except Exception:
             pass
     return True
+
+
+# ============================================================================
+# 6. VIEWPORT LOW-POLY PROXY MODE (~25K POLYS/ELF + CARGO, AUTO HIGH-RES RENDER)
+# ============================================================================
+
+_PART_TARGET_POLYS = {
+    "BODY": 8500,
+    "HEAD": 8500,
+    "HAT": 4500,
+    "GLASSES": 3500,
+    "CARGO": 12000,
+}
+
+
+def _infer_proxy_part_category(obj: bpy.types.Object) -> str:
+    if obj.name.startswith("MC_Cargo"):
+        return "CARGO"
+    pt = str(obj.get("af_part_type", "")).upper()
+    if pt in _PART_TARGET_POLYS:
+        return pt
+    nu = obj.name.upper()
+    for k in ("GLASSES", "HAT", "HEAD", "BODY"):
+        if nu.endswith("_" + k) or ("_" + k + "_") in nu:
+            return k
+    return "BODY"
+
+
+def _build_decimated_mesh_preserving_weights(
+    ref_obj: bpy.types.Object,
+    hi_mesh: bpy.types.Mesh,
+    lo_name: str,
+    target_polys: int,
+    scene: bpy.types.Scene,
+) -> bpy.types.Mesh:
+    """
+    Context-free mesh decimation via evaluated depsgraph (`new_from_object(..., preserve_all_data_layers=True)`).
+    Preserves 100% of Vertex Groups (`MDeformVert` weights), UV maps, and materials with zero live modifier cost.
+    """
+    existing = bpy.data.meshes.get(lo_name)
+    if existing and len(existing.polygons) > 100:
+        existing.use_fake_user = True
+        return existing
+
+    cur_polys = len(hi_mesh.polygons)
+    if cur_polys <= int(target_polys * 1.15):
+        return hi_mesh
+
+    ratio = max(0.05, min(0.95, float(target_polys) / float(cur_polys)))
+    tmp_mesh = hi_mesh.copy()
+    tmp_obj = bpy.data.objects.new("_AF_Tmp_Proxy_Builder", tmp_mesh)
+    for vg in ref_obj.vertex_groups:
+        tmp_obj.vertex_groups.new(name=vg.name)
+    scene.collection.objects.link(tmp_obj)
+
+    try:
+        dec = tmp_obj.modifiers.new("AF_Bake_Decimate", "DECIMATE")
+        dec.decimate_type = "COLLAPSE"
+        dec.ratio = ratio
+        dg = bpy.context.evaluated_depsgraph_get()
+        eval_tmp = tmp_obj.evaluated_get(dg)
+        if existing:
+            bpy.data.meshes.remove(existing, do_unlink=True)
+        lo_mesh = bpy.data.meshes.new_from_object(eval_tmp, preserve_all_data_layers=True, depsgraph=dg)
+        lo_mesh.name = lo_name
+        lo_mesh.use_fake_user = True
+        return lo_mesh
+    finally:
+        bpy.data.objects.remove(tmp_obj, do_unlink=True)
+        bpy.data.meshes.remove(tmp_mesh, do_unlink=True)
+
+
+def set_scene_viewport_proxy_mode(enabled: bool = True, context=None) -> dict:
+    """
+    Switches all active Elf sub-meshes (`BODY`, `HEAD`, `HAT`, `GLASSES`) and Minecart Cargo (`MC_Cargo_*`)
+    between pre-baked Low-Poly Viewport Proxy meshes (~25k polys per Elf total, ~12k per cargo)
+    and their original High-Poly raw meshes (~202k polys per Elf, ~114k per cargo).
+    Also hides any stray `TPL_*` template objects/collections in the viewport.
+    """
+    scn = getattr(context, "scene", None) or getattr(bpy.context, "scene", None)
+    if not scn:
+        return {"swapped": 0, "before_polys": 0, "after_polys": 0}
+
+    # Ensure all TPL_ collections and objects are hidden in viewport/render
+    for col in bpy.data.collections:
+        if col.name.startswith("TPL_") or col.name in ("00_AF_ELF_TEMPLATES", "00_RIGGED_ELF_TEMPLATES"):
+            if not col.hide_viewport:
+                col.hide_viewport = True
+            if not col.hide_render:
+                col.hide_render = True
+    for o in bpy.data.objects:
+        if o.name.startswith("TPL_"):
+            if not o.hide_viewport:
+                o.hide_viewport = True
+            if not o.hide_render:
+                o.hide_render = True
+
+    candidates = []
+    for o in scn.objects:
+        if o.type != "MESH" or o.name.startswith("TPL_") or not o.data:
+            continue
+        is_elf_part = any(m.type == "ARMATURE" for m in o.modifiers) or bool(o.get("af_part_type"))
+        is_cargo = o.name.startswith("MC_Cargo_")
+        if is_elf_part or is_cargo:
+            candidates.append(o)
+
+    before_polys = 0
+    after_polys = 0
+    swapped = 0
+
+    for o in candidates:
+        before_polys += len(o.data.polygons)
+        hi_name = o.get("af_hi_mesh", "")
+        hi_mesh = bpy.data.meshes.get(hi_name) if hi_name else None
+        if not hi_mesh:
+            if not o.data.name.endswith("_AF_LP"):
+                hi_mesh = o.data
+                o["af_hi_mesh"] = hi_mesh.name
+                hi_mesh.use_fake_user = True
+            else:
+                after_polys += len(o.data.polygons)
+                continue
+
+        if not enabled:
+            if o.data != hi_mesh:
+                o.data = hi_mesh
+                swapped += 1
+            after_polys += len(o.data.polygons)
+            continue
+
+        cat = _infer_proxy_part_category(o)
+        target_p = _PART_TARGET_POLYS.get(cat, 8000)
+        mat_sig = "_".join(m.name[:10] for m in hi_mesh.materials if m) or "nomat"
+        lo_name = f"AF_Proxy_{cat}_{len(hi_mesh.vertices)}v_{mat_sig}_AF_LP"[:60]
+
+        lo_mesh = bpy.data.meshes.get(lo_name)
+        if not lo_mesh:
+            lo_mesh = _build_decimated_mesh_preserving_weights(o, hi_mesh, lo_name, target_p, scn)
+        o["af_lo_mesh"] = lo_mesh.name
+        if o.data != lo_mesh:
+            o.data = lo_mesh
+            swapped += 1
+        after_polys += len(o.data.polygons)
+
+    scn["af_viewport_proxy_active"] = bool(enabled)
+    return {
+        "swapped": swapped,
+        "before_polys": before_polys,
+        "after_polys": after_polys,
+    }
+
+
+@bpy.app.handlers.persistent
+def af_proxy_render_pre_handler(scene, depsgraph=None):
+    """Automatically restores 100% high-poly Elf & Cargo meshes right before final rendering."""
+    if not scene or not scene.get("af_viewport_proxy_active", False):
+        return
+    for o in scene.objects:
+        if o.type == "MESH" and o.get("af_hi_mesh"):
+            hi_m = bpy.data.meshes.get(o["af_hi_mesh"])
+            if hi_m and o.data != hi_m:
+                o.data = hi_m
+
+
+@bpy.app.handlers.persistent
+def af_proxy_render_post_handler(scene, depsgraph=None):
+    """Restores fast Low-Poly Viewport Proxy meshes after rendering finishes or cancels."""
+    if not scene or not scene.get("af_viewport_proxy_active", False):
+        return
+    for o in scene.objects:
+        if o.type == "MESH" and o.get("af_lo_mesh"):
+            lo_m = bpy.data.meshes.get(o["af_lo_mesh"])
+            if lo_m and o.data != lo_m:
+                o.data = lo_m
+

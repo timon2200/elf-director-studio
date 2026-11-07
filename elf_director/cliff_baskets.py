@@ -553,7 +553,9 @@ def update_rope_assembly_curves_for_rig(rig_root: bpy.types.Object, vib_amp_m: f
     # Toggle visibility of inactive pin gizmos so the user clearly sees which 2, 3, or 4 pins are active
     for idx, p_obj in enumerate(pins):
         if p_obj:
-            p_obj.hide_viewport = (idx not in active_indices)
+            hide_pin = (idx not in active_indices)
+            if p_obj.hide_viewport != hide_pin:
+                p_obj.hide_viewport = hide_pin
 
     # Convert gizmo positions into `rig_root` local space (since `rope_obj` is parented to `rig_root` at identity)
     b_pos = Vector(basket_body.location)
@@ -566,14 +568,20 @@ def update_rope_assembly_curves_for_rig(rig_root: bpy.types.Object, vib_amp_m: f
     p_winch = Vector(winch.location)
 
     curve_data = rope_obj.data
-    curve_data.splines.clear()
     segs_per_rope = 9
+    expected_splines = len(active_indices) if rope_mode == "PARALLEL" else (len(active_indices) + 1)
+    if len(curve_data.splines) != expected_splines or any(len(s.points) != segs_per_rope for s in curve_data.splines):
+        curve_data.splines.clear()
+        for _ in range(expected_splines):
+            sp_new = curve_data.splines.new("POLY")
+            sp_new.points.add(segs_per_rope - 1)
+
+    spline_cursor = [0]
 
     def add_catenary_spline(p_start: Vector, p_end: Vector, sag: float, vib_sign: float):
-        sp = curve_data.splines.new("POLY")
-        sp.points.add(segs_per_rope - 1)
+        sp = curve_data.splines[spline_cursor[0]]
+        spline_cursor[0] += 1
         chord = p_end - p_start
-        chord_len = max(chord.length, 1e-4)
         # Perpendicular horizontal normal for transverse string vibration
         perp = Vector((chord.y, -chord.x, 0.0))
         if perp.length > 1e-4:
@@ -593,7 +601,8 @@ def update_rope_assembly_curves_for_rig(rig_root: bpy.types.Object, vib_amp_m: f
             sp.points[k].co = (pt.x, pt.y, pt.z, 1.0)
 
     if rope_mode == "PARALLEL":
-        spreader.hide_viewport = True
+        if not spreader.hide_viewport:
+            spreader.hide_viewport = True
         for idx in active_indices:
             p_obj = pins[idx]
             if not p_obj:
@@ -603,7 +612,8 @@ def update_rope_assembly_curves_for_rig(rig_root: bpy.types.Object, vib_amp_m: f
             p_top = Vector((p_winch.x + p_obj.location.x * 0.85, p_winch.y + p_obj.location.y * 0.85, p_winch.z))
             add_catenary_spline(p_pin, p_top, slack_m * 0.6, 1.0 if idx % 2 == 0 else -1.0)
     else:
-        spreader.hide_viewport = False
+        if spreader.hide_viewport:
+            spreader.hide_viewport = False
         for idx in active_indices:
             p_obj = pins[idx]
             if not p_obj:
@@ -975,11 +985,14 @@ def apply_basket_physics_to_rig(rig_root: bpy.types.Object, frame: float, scene:
         wall_target.location.z = state["location"].z + 1.05
 
     # Update Blue-Ice Shard Burst VFX at `GIZMO_WallTarget`
+    # Keep hide_viewport/hide_render False and scale to (0,0,0) when inactive so pickaxe strikes never trigger DEG_relations_tag_update!
     if burst_obj and wall_target:
+        if burst_obj.hide_viewport:
+            burst_obj.hide_viewport = False
+        if burst_obj.hide_render:
+            burst_obj.hide_render = False
         b_dt = state["burst_dt"]
         if 0.0 <= b_dt <= 0.60:
-            burst_obj.hide_viewport = False
-            burst_obj.hide_render = False
             u_b = b_dt / 0.60
             sc = 0.25 + 1.45 * math.sin(math.pi * min(1.0, u_b * 1.3))
             burst_obj.location = (
@@ -990,8 +1003,8 @@ def apply_basket_physics_to_rig(rig_root: bpy.types.Object, frame: float, scene:
             burst_obj.scale = (sc, sc, sc)
             burst_obj.rotation_euler = (u_b * 3.5, u_b * 2.2, u_b * 4.1)
         else:
-            burst_obj.hide_viewport = True
-            burst_obj.hide_render = True
+            if burst_obj.scale.x != 0.0:
+                burst_obj.scale = (0.0, 0.0, 0.0)
 
     # Update procedural 3D rope curves & transverse vibration
     update_rope_assembly_curves_for_rig(
@@ -1032,6 +1045,9 @@ def af_cliff_baskets_depsgraph_handler(scene, depsgraph=None):
     if _PHYSICS_EVAL_GUARD or _CB_PROP_SYNC_GUARD or bpy.app.background:
         return
     context = bpy.context
+    scr = getattr(context, "screen", None)
+    if scr and getattr(scr, "is_animation_playing", False):
+        return
     active = getattr(context, "active_object", None)
     if not active:
         return
@@ -1335,6 +1351,114 @@ def clear_baked_cliff_basket_keyframes(rig_root: bpy.types.Object):
     apply_basket_physics_to_rig(rig_root, float(bpy.context.scene.frame_current), scene=bpy.context.scene)
 
 
+def build_or_update_winch_cantilever_beam(rig_root: bpy.types.Object, beam_length_into_wall: float = 18.0) -> bpy.types.Object:
+    """
+    Builds or updates the 3D Beechwood Timber Cantilever Beam (`Prop_WinchBeam_##`) with
+    oiled wrought-iron clevis hanger straps, front collar, periodic iron bands, and brass
+    square bolt studs parented directly to `GIZMO_TopWinch_##`.
+    Extends `-Y` (`beam_length_into_wall = 18.0 m`) deep into the glacier wall so the user
+    can move the basket or top winch anywhere without the beam ever coming up short.
+    """
+    if not rig_root:
+        return None
+    tag = rig_root.get("af_cb_tag", rig_root.name.split("_")[-1])
+    winch_obj = bpy.data.objects.get(rig_root.get("af_cb_winch_gizmo", f"GIZMO_TopWinch_{tag}"))
+    if not winch_obj:
+        return None
+
+    st_col = next(iter(rig_root.users_collection), bpy.context.scene.collection)
+
+    wood_mat = (
+        bpy.data.materials.get("MAT_S3_Beechwood_Sleeper_And_Timber")
+        or _get_or_create_material("AF_CB_WickerWood_Mat", (0.28, 0.17, 0.09), metallic=0.05, roughness=0.62)
+    )
+    iron_mat = (
+        bpy.data.materials.get("MAT_S3_Wrought_Iron_Oiled")
+        or _get_or_create_material("AF_CB_ForgedIron_Mat", (0.20, 0.22, 0.25), metallic=0.82, roughness=0.38)
+    )
+    brass_mat = (
+        bpy.data.materials.get("MAT_S3_Aged_Brass_And_Steam_Pipes")
+        or _get_or_create_material("AF_CB_AgedBrass_Mat", (0.80, 0.60, 0.22), metallic=0.88, roughness=0.28)
+    )
+
+    mesh_name = f"Mesh_WinchBeam_{tag}"
+    beam_obj_name = f"Prop_WinchBeam_{tag}"
+
+    old_obj = bpy.data.objects.get(beam_obj_name)
+    if old_obj:
+        old_mesh = old_obj.data
+        bpy.data.objects.remove(old_obj, do_unlink=True)
+        if old_mesh and old_mesh.users == 0:
+            bpy.data.meshes.remove(old_mesh, do_unlink=True)
+
+    mesh = bpy.data.meshes.new(mesh_name)
+    mesh.materials.append(wood_mat)   # slot 0: Beechwood timber
+    mesh.materials.append(iron_mat)   # slot 1: Oiled wrought iron
+    mesh.materials.append(brass_mat)  # slot 2: Aged brass bolts/axle
+
+    bm = bmesh.new()
+
+    def _add_box(x0, x1, y0, y1, z0, z1, mat_idx=0):
+        ret = bmesh.ops.create_cube(bm, size=1.0)
+        verts = ret["verts"]
+        bmesh.ops.scale(bm, vec=(x1 - x0, y1 - y0, z1 - z0), verts=verts)
+        bmesh.ops.translate(bm, vec=(0.5 * (x0 + x1), 0.5 * (y0 + y1), 0.5 * (z0 + z1)), verts=verts)
+        for v in verts:
+            for f in v.link_faces:
+                f.material_index = mat_idx
+
+    bx = 0.17
+    bz0, bz1 = 0.23, 0.57
+    y_front = 0.48
+    y_back = -float(beam_length_into_wall)
+    _add_box(-bx, bx, y_back, y_front, bz0, bz1, mat_idx=0)
+
+    cx = bx + 0.035
+    cz0, cz1 = bz0 - 0.035, bz1 + 0.035
+    _add_box(-cx, cx, 0.28, 0.50, cz0, cz1, mat_idx=1)
+    for sy in (0.38,):
+        for sz in (bz0 + 0.07, bz1 - 0.07):
+            _add_box(-cx - 0.03, cx + 0.03, sy - 0.035, sy + 0.035, sz - 0.035, sz + 0.035, mat_idx=2)
+
+    _add_box(-cx, cx, -0.20, 0.20, cz0, cz1, mat_idx=1)
+    for sy in (-0.11, 0.11):
+        for sz in (bz0 + 0.07, bz1 - 0.07):
+            _add_box(-cx - 0.03, cx + 0.03, sy - 0.035, sy + 0.035, sz - 0.035, sz + 0.035, mat_idx=2)
+
+    for sign_x in (-1.0, 1.0):
+        x_in = sign_x * 0.042
+        x_out = sign_x * 0.092
+        x0, x1 = (x_in, x_out) if x_in < x_out else (x_out, x_in)
+        _add_box(x0, x1, -0.13, 0.13, -0.07, bz0 + 0.02, mat_idx=1)
+
+    ret_ax = bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=16, radius1=0.045, radius2=0.045, depth=0.25)
+    bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Matrix.Rotation(math.radians(90.0), 3, "Y"), verts=ret_ax["verts"])
+    for v in ret_ax["verts"]:
+        for f in v.link_faces:
+            f.material_index = 2
+
+    for y_col in (-0.95, -2.10, -3.35, -4.70, -6.20, -7.80, -9.60, -11.50, -13.50, -15.50):
+        if y_col > y_back + 0.5:
+            _add_box(-cx, cx, y_col - 0.16, y_col + 0.16, cz0, cz1, mat_idx=1)
+            for sz in (bz0 + 0.07, bz1 - 0.07):
+                _add_box(-cx - 0.03, cx + 0.03, y_col - 0.035, y_col + 0.035, sz - 0.035, sz + 0.035, mat_idx=2)
+
+    bm.normal_update()
+    bm.to_mesh(mesh)
+    bm.free()
+    mesh.update()
+
+    beam_obj = bpy.data.objects.new(beam_obj_name, mesh)
+    beam_obj.parent = winch_obj
+    beam_obj.location = (0.0, 0.0, 0.0)
+    beam_obj.rotation_euler = (0.0, 0.0, 0.0)
+    beam_obj["af_is_editable_prop"] = True
+    beam_obj["af_cb_rig_root"] = rig_root.name
+    st_col.objects.link(beam_obj)
+    rig_root["af_cb_winch_beam"] = beam_obj.name
+    return beam_obj
+
+
 def spawn_cliff_basket_station(
     context=None,
     preset_id: str = "BASKET_01_OCT_EMPTY",
@@ -1508,6 +1632,9 @@ def spawn_cliff_basket_station(
     pulley_obj["af_cb_rig_root"] = rig_root.name
     st_col.objects.link(pulley_obj)
     rig_root["af_cb_pulley_wheel"] = pulley_obj.name
+
+    # Physical 3D Timber Cantilever Beam & Iron Clevis Hanger extending 18m into the wall
+    build_or_update_winch_cantilever_beam(rig_root, beam_length_into_wall=18.0)
 
     # 7. Wall Impact Target Gizmo (`GIZMO_WallTarget_##`) & Blue-Ice Shard Burst VFX (`VFX_IceBurst_##`)
     wt_mesh = _build_gizmo_ring_mesh(
@@ -2285,6 +2412,10 @@ def snap_single_basket_to_glacier_wall(
     clamped_yaw_deg = max(72.0, min(108.0, raw_yaw_deg))
     rig_root.rotation_mode = "XYZ"
     rig_root.rotation_euler = (0.0, 0.0, math.radians(clamped_yaw_deg))
+
+    tag = rig_root.get("af_cb_tag", rig_root.name.split("_")[-1])
+    if not bpy.data.objects.get(f"Prop_WinchBeam_{tag}"):
+        build_or_update_winch_cantilever_beam(rig_root, beam_length_into_wall=18.0)
 
     apply_basket_physics_to_rig(rig_root, float(bpy.context.scene.frame_current), scene=bpy.context.scene)
     return {

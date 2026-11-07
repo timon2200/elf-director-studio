@@ -131,25 +131,45 @@ def ensure_library_loaded(load_templates: bool = True, load_actions: bool = True
         except Exception as e:
             print(f"[ElfDirector] Error loading library '{lib_path}': {e}")
 
-    # Link and hide template collection
-    tpl_col = bpy.data.collections.get(TEMPLATE_COLLECTION_NAME)
+    # Link and hide template collection (plus all TPL_* sub-collections and objects so Blender never evaluates 633k hidden polygons in the viewport)
+    tpl_col = ensure_collection(TEMPLATE_COLLECTION_NAME)
+    scn_col = bpy.context.scene.collection if (bpy.context and bpy.context.scene) else None
     if tpl_col:
-        if bpy.context and bpy.context.scene:
-            scn_col = bpy.context.scene.collection
-            if tpl_col.name not in scn_col.children:
-                try:
-                    scn_col.children.link(tpl_col)
-                except Exception:
-                    pass
         for e in RIGGED_ELF_ROSTER:
             sub = bpy.data.collections.get(e["col_name"])
-            if sub and sub.name not in tpl_col.children:
-                try:
-                    tpl_col.children.link(sub)
-                except Exception:
-                    pass
+            if sub:
+                if sub.name not in tpl_col.children:
+                    try:
+                        tpl_col.children.link(sub)
+                    except Exception:
+                        pass
+                if scn_col and sub.name in scn_col.children:
+                    try:
+                        scn_col.children.unlink(sub)
+                    except Exception:
+                        pass
+                sub.hide_viewport = True
+                sub.hide_render = True
+                for o in sub.objects:
+                    o.hide_viewport = True
+                    o.hide_render = True
         tpl_col.hide_viewport = True
         tpl_col.hide_render = True
+    for extra_col_name in ("00_AF_ELF_TEMPLATES",):
+        extra_col = bpy.data.collections.get(extra_col_name)
+        if extra_col:
+            extra_col.hide_viewport = True
+            extra_col.hide_render = True
+            for sub in extra_col.children:
+                sub.hide_viewport = True
+                sub.hide_render = True
+            for o in extra_col.all_objects:
+                o.hide_viewport = True
+                o.hide_render = True
+    for o in bpy.data.objects:
+        if o.name.startswith("TPL_"):
+            o.hide_viewport = True
+            o.hide_render = True
 
     _restore_action_metadata_from_registry(reg_data)
 

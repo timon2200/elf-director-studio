@@ -975,7 +975,7 @@ def register_minecart_pusher_handlers():
         for h in list(h_list):
             if getattr(h, "__name__", "") == "af_minecart_pusher_frame_handler":
                 h_list.remove(h)
-        h_list.append(af_minecart_pusher_frame_handler)
+    bpy.app.handlers.frame_change_post.append(af_minecart_pusher_frame_handler)
 
 
 def unregister_minecart_pusher_handlers():

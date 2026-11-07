@@ -29,6 +29,8 @@ from .database import (
     scan_dropin_animations,
 )
 from .rig_actors import (
+    af_proxy_render_post_handler,
+    af_proxy_render_pre_handler,
     delete_elf_actor,
     duplicate_elf_actor,
     enable_viewport_transform_gizmos,
@@ -37,6 +39,7 @@ from .rig_actors import (
     get_all_scene_character_controllers,
     get_character_armature_from_ctrl,
     set_actor_accessories,
+    set_scene_viewport_proxy_mode,
     spawn_elf_actor,
     swap_character_model_on_controller,
 )
@@ -203,6 +206,9 @@ def af_selection_redirect_handler(scene, depsgraph=None):
         return
 
     context = bpy.context
+    scr = getattr(context, "screen", None)
+    if scr and getattr(scr, "is_animation_playing", False):
+        return
     active_obj = getattr(context, "active_object", None)
     if not active_obj or active_obj.mode != "OBJECT":
         return
@@ -1365,6 +1371,16 @@ class VIEW3D_PT_ActionForgeElfDirector(bpy.types.Panel):
         row_hdr.operator("af_director.randomize_offsets", text="De-Sync", icon="TIME")
         row_hdr.operator("af_director.toggle_templates", text="", icon="HIDE_OFF")
 
+        is_proxy = bool(scn.get("af_viewport_proxy_active", False))
+        row_prx = box_crowd.row(align=True)
+        row_prx.scale_y = 1.2
+        row_prx.operator(
+            "af_director.toggle_viewport_proxy",
+            text="Viewport Proxy ON (~25k/Elf, Render 100%)" if is_proxy else "Uključi Viewport Proxy (~25k/Elf, Brzi FPS)",
+            depress=is_proxy,
+            icon="MOD_DECIM",
+        )
+
         col_list = box_crowd.column(align=True)
         for c in all_ctrls:
             is_sel = (c == ctrl)
@@ -1592,6 +1608,27 @@ class VIEW3D_PT_ActionForgeElfDirector(bpy.types.Panel):
         box_imp.prop(scn, "af_director_allow_subpart_select", text="Dopusti Direktno Biranje Meša/Kosti")
 
 
+class AFDIR_OT_ToggleViewportProxyMode(bpy.types.Operator):
+    bl_idname = "af_director.toggle_viewport_proxy"
+    bl_label = "Toggle Viewport Low-Poly Proxy Mode (~25k Polys/Elf)"
+    bl_description = (
+        "Prebacuje sve vilenjake i teret rudarskih kolica u sceni na optimizirane Low-Poly meševe (~25k poligona po vilenjaku) "
+        "za glatki 60 FPS rad u Viewportu, dok pri finalnom renderu automatski vraća pune 202k meševe"
+    )
+    bl_options = {"REGISTER", "UNDO"}
+
+    def execute(self, context):
+        scn = context.scene
+        target = not bool(scn.get("af_viewport_proxy_active", False))
+        res = set_scene_viewport_proxy_mode(enabled=target, context=context)
+        mode_lbl = "ON (Low-Poly Viewport, High-Poly Render)" if target else "OFF (Full High-Poly u Viewportu)"
+        self.report(
+            {"INFO"},
+            f"Viewport Proxy {mode_lbl}: {res['before_polys']:,} -> {res['after_polys']:,} poligona ({res['swapped']} meševa).",
+        )
+        return {"FINISHED"}
+
+
 # ============================================================================
 # 5. REGISTRATION
 # ============================================================================
@@ -1606,6 +1643,7 @@ CLASSES = (
     AFDIR_OT_RandomizeCrowdOffsets,
     AFDIR_OT_LockConstantStrideSpeed,
     AFDIR_OT_ToggleTemplateLineup,
+    AFDIR_OT_ToggleViewportProxyMode,
     AFDIR_OT_AppendAnimationNLA,
     AFDIR_OT_RemoveNLAClip,
     AFDIR_OT_MoveNLAClip,
@@ -1805,6 +1843,17 @@ def register():
             bpy.app.handlers.depsgraph_update_post.remove(h)
     bpy.app.handlers.depsgraph_update_post.append(af_selection_redirect_handler)
 
+    for h in list(bpy.app.handlers.render_pre):
+        if getattr(h, "__name__", "") == "af_proxy_render_pre_handler":
+            bpy.app.handlers.render_pre.remove(h)
+    bpy.app.handlers.render_pre.append(af_proxy_render_pre_handler)
+
+    for h_list in (bpy.app.handlers.render_post, bpy.app.handlers.render_cancel):
+        for h in list(h_list):
+            if getattr(h, "__name__", "") == "af_proxy_render_post_handler":
+                h_list.remove(h)
+        h_list.append(af_proxy_render_post_handler)
+
     try:
         from .cliff_baskets_ui import register_cliff_baskets_ui
         register_cliff_baskets_ui()
@@ -1844,6 +1893,13 @@ def unregister():
     for h in list(bpy.app.handlers.depsgraph_update_post):
         if getattr(h, "__name__", "") == "af_selection_redirect_handler":
             bpy.app.handlers.depsgraph_update_post.remove(h)
+    for h in list(bpy.app.handlers.render_pre):
+        if getattr(h, "__name__", "") == "af_proxy_render_pre_handler":
+            bpy.app.handlers.render_pre.remove(h)
+    for h_list in (bpy.app.handlers.render_post, bpy.app.handlers.render_cancel):
+        for h in list(h_list):
+            if getattr(h, "__name__", "") == "af_proxy_render_post_handler":
+                h_list.remove(h)
     for cls in reversed(CLASSES):
         try:
             bpy.utils.unregister_class(cls)
